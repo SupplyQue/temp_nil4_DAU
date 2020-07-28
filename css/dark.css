@@ -1,0 +1,24 @@
+/* Dark mode style sheet. Designed by Pratik Nilange for SupplyQue */
+
+body{
+	background-color: rgb(20, 20, 20);
+	color: white;
+}
+
+::-moz-selection { /* Code for Firefox */
+  color: black;
+  background: white;
+}
+
+::selection {
+  color: black;
+  background: white	;
+}
+
+.box {
+	background-color: rgba(0, 0, 0, 0.9) !important;
+	-webkit-backdrop-filter: blur(5px) !important;
+	backdrop-filter: blur(5px) !important;
+}
+
+/* Also change the navbar class */

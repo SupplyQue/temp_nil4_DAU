@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- BS -->
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-table.min.css">
+	<!-- BS End -->
+	<!-- Custom CSS -->
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/light.css"> <!-- Dark or Light -->
+	<!-- Custom CSS End -->
+	<!-- Map CSS -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   	integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   	crossorigin=""/>
+   	<link rel="stylesheet" type="text/css" href="css/leaflet-search.css">
+	<!-- Map CSS End -->
+
+	<title>SQ - Powai</title>
+	<style>
+	#map { height: 400px; }
+
+    body { padding-top: 120px; }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+</head>
+<body>
+	<!-- Nav start -->
+	<nav class="navbar fixed-top navbar-expand-lg navbar-light py-2 shadow box">
+		<div class="container d-flex justify-content-between">
+			<a class="navbar-brand" href="#"><span style="font-size: 40px; font-family: sq;">SQ</span></a>
+			<!-- Simplify Supply -->
+	  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    	<span class="navbar-toggler-icon"></span>
+	  		</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    	<ul class="navbar-nav mr-auto d-flex justify-content-between">
+		      		<!-- <li class="nav-item active">
+		        		<a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+		      		</li> -->
+		      		<!-- <li class="nav-item dropdown">
+		        		<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          			Services
+		        		</a>
+		        		<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          			<a class="dropdown-item" href="#">Shops near me</a>
+		          			<a class="dropdown-item" href="#">Cart-vendors near me</a>
+		        		</div>
+		      		</li> -->
+				    <!-- <li class="nav-item">
+				    	<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+				    </li> -->
+		      		<!-- <li class="nav-item">
+		        		<a class="nav-link" href="#">Pricing</a>
+		    		</li> -->
+		    	</ul>
+				<div class="dropdown">
+  					<button class="btn btn-primary dropdown-toggle btntheme" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    					Hi User!
+  					</button>
+					  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					    <a class="dropdown-item" href="dashboard.html">Dashboard</a>
+					    <a class="dropdown-item" href="#">Settings</a>
+					    <a class="dropdown-item" href="#">My Orders</a>
+					    <a class="dropdown-item" href="#">Log out</a>
+					  </div>
+				</div>
+	  		</div>
+		</div>	
+	</nav>		
+  	<!-- Nav end -->
+  	<div class="d-flex flex-row-reverse fixed-bottom box py-1">
+  		<img draggable="false" class="emoji" alt="🇮🇳" src="img/india.svg" width="40" height="20" style="padding-bottom: 2px;">
+  	</div>
+  	<div class="container">
+  	<h1 style="font-size: 50px;">Powai</h1>
+  	<hr>
+  		<div class="card">
+  			<div class="card-body bg-dark text-white">
+    			<div id="map"></div>
+  			</div>
+		</div>
+		<br>
+		<br>
+  	</div>
+</body>
+
+<!-- Db -->
+<script type="text/javascript" src="db/powai.js"></script>
+<!-- Db End -->
+
+<!-- Standard JS -->
+<script type="text/javascript" src="js/jquery-3.4.1.slim.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-table.min.js"></script>
+<!-- Standard JS End -->
+<!-- Map JS -->
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+crossorigin=""></script>
+<script type="text/javascript" src="js/leaflet-search.js"></script>
+<!-- Map JS End -->
+
+<!-- Raw JS -->
+
+<script type="text/javascript">
+
+	var data = [
+		{"loc":[19.11878, 72.90531], "title":"Tech store"},
+		{"loc":[19.11854, 72.9052], "title":"Sports Center"}
+	];
+
+	var map = new L.Map('map', {zoom: 17, center: new L.latLng(data[0].loc) });	//set center from first location
+
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+
+	var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	
+	map.addLayer(markersLayer);
+
+	var controlSearch = new L.Control.Search({
+		position:'topright',		
+		layer: markersLayer,
+		initial: false,
+		zoom: 25,
+		marker: false
+	});
+
+	map.addControl( controlSearch );
+
+	////////////populate map with markers from sample data
+	for(i in data) {
+		var title = data[i].title,	//value searched
+			loc = data[i].loc,		//position found
+			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
+		marker.bindPopup('title: '+ title );
+		markersLayer.addLayer(marker);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+// 	var mymap = L.map('mapid').setView([19.1176, 72.9060], 19);
+// 	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+//     maxZoom: 18,
+//     id: 'mapbox/streets-v11',
+//     tileSize: 512,
+//     zoomOffset: -1,
+//     accessToken: 'pk.eyJ1Ijoic292ZXJ5aW5kIiwiYSI6ImNrZDQ1dTYybDBzcWEyeW16ZXMwNXg0MnEifQ.tPWW8kNaQx41ggwkQJcQQA'
+// }).addTo(mymap);
+</script>
+
+
+<!-- Raw JS End -->
+
+</html>																																																			
